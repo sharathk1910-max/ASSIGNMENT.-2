@@ -1,0 +1,248 @@
+{
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python (Pyodide)",
+      "language": "python",
+      "name": "python"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "python",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.8"
+    }
+  },
+  "nbformat_minor": 5,
+  "nbformat": 4,
+  "cells": [
+    {
+      "id": "fff61e28-dd24-4929-baa3-b4438e67a0f7",
+      "cell_type": "markdown",
+      "source": "# Pandas Assignment – Clean, Transform & Analyze Data by SHARATH K ",
+      "metadata": {}
+    },
+    {
+      "id": "6f7992bf-0c88-461c-978f-671e68a236b3",
+      "cell_type": "markdown",
+      "source": "Dataset Name: Online Retail Dataset  \nSource: UCI Machine Learning Repository  \nLink: https://archive.ics.uci.edu/ml/datasets/online+retail  \n\n### What one row represents  \n\nEach row represents a single product item purchased in a customer invoice.\n\n### Explanation of Columns\n- InvoiceNo: Unique invoice number\n- StockCode: Product code\n- Description: Product name\n- Quantity: Number of items purchased\n- InvoiceDate: Date and time of transaction\n- UnitPrice: Price per unit\n\n### Expected Data Issues\nMissing values in CustomerID and Description  \nDuplicate invoice records",
+      "metadata": {}
+    },
+    {
+      "id": "0685183a-7e44-4439-8502-488836771f67",
+      "cell_type": "code",
+      "source": "import pandas as pd\nimport os\nos.listdir()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "402416da-932e-4ccc-afc0-1fab06d7ed3f",
+      "cell_type": "code",
+      "source": "df = pd.read_csv(\"online_retail.csv\", encoding=\"latin1\")",
+      "metadata": {
+        "trusted": true,
+        "scrolled": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "e121531f-0278-4e8b-85b7-5463fbb43d76",
+      "cell_type": "code",
+      "source": "df.shape",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "8be2a35e-b1ae-4026-9f28-9ea20b0419c3",
+      "cell_type": "code",
+      "source": "df.head",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "79e9317b-6b3f-4300-8426-2150efbb5b7b",
+      "cell_type": "code",
+      "source": "df.info()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "1a07d69d-4d67-4f99-9f1c-1537f4537e43",
+      "cell_type": "code",
+      "source": "df.isna().sum().sort_values(ascending=False)",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "f4e1fc76-cb7f-42d6-b5fc-79334c1fedb0",
+      "cell_type": "code",
+      "source": "df.duplicated().sum()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "bc1e16ea-c5d9-40b8-8f73-2aa68ba63640",
+      "cell_type": "code",
+      "source": "df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'], dayfirst=True)",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "2b76c8d8-8ebf-4365-9028-4c919ab6c485",
+      "cell_type": "code",
+      "source": "df['UnitPrice'] = df['UnitPrice'].fillna(df['UnitPrice'].median())",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "47f22223-0915-4f47-bd7b-066a6b83d106",
+      "cell_type": "code",
+      "source": "df['Description'] = df['Description'].fillna(df['Description'].mode()[0])",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "d77a3800-e1a8-4020-9739-83a78c005fed",
+      "cell_type": "code",
+      "source": "df['Description'] = df['Description'].str.strip().str.title()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "c7871524-9d36-422f-a8f9-8f6d701f09a4",
+      "cell_type": "code",
+      "source": "df = df.drop_duplicates()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "1f9d0b32-f2bc-439f-803f-123497d1a4a5",
+      "cell_type": "code",
+      "source": "df = df[df['Quantity'] > 0]",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "94ca658b-db03-47c8-b0bd-30bdee80431f",
+      "cell_type": "code",
+      "source": "df['TotalRevenue'] = df['Quantity'] * df['UnitPrice']",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "9d5b0613-4722-4298-bde3-ab7f61f9879f",
+      "cell_type": "code",
+      "source": "df['InvoiceMonth'] = df['InvoiceDate'].dt.month",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "980de8ec-f075-43eb-91fd-c3ecbfd59fad",
+      "cell_type": "code",
+      "source": "df['HighValue'] = df['TotalRevenue'] > 500",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "f56fda16-65e8-4122-8aaa-ea581544c43e",
+      "cell_type": "code",
+      "source": "df.groupby('Country')['TotalRevenue'].sum().sort_values(ascending=False).head()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "fd58b238-f9cb-4b2d-8a38-407b3aeb12bc",
+      "cell_type": "code",
+      "source": "df.sort_values(by='TotalRevenue', ascending=False).head()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "9f0b69d2-501f-4afe-9025-9b10619c2c21",
+      "cell_type": "code",
+      "source": "df['Description'].value_counts().head()",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "026958cc-e608-4cff-9e8c-a0466278d86b",
+      "cell_type": "code",
+      "source": "pd.pivot_table(\n    df,\n    values='TotalRevenue',\n    index='InvoiceMonth',\n    aggfunc='sum'\n)",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "c25c976a-7a6b-469e-bb82-776026a88274",
+      "cell_type": "code",
+      "source": "df[df['HighValue']].shape",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    }
+  ]
+}
